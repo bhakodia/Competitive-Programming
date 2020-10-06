@@ -1,0 +1,98 @@
+#include <iostream>
+#include<bits/stdc++.h>
+
+using namespace std;
+
+
+
+class Disjointset
+{
+	
+ public:
+   //creating nodes
+   struct Node
+   {   int rank=0;
+	   int data;
+	   struct Node* parent;
+	   Node(int key)
+	   {   data = key;
+	       parent = NULL;}
+   };
+   //map to store data and node created with that data
+   map<int,struct Node*> map1;
+   //function to create node
+   void createNode(int data)
+   {
+   	 struct Node* node = new Node(data);
+   	 makeset(node);
+   }
+    //makeset Operation for Disjointset datastructure
+    void makeset(struct Node* node)
+    {  map1[node->data]=node;
+  	   if(node->parent==NULL)
+  	     node->parent=node;
+    }
+  	
+    //findset operation of Disjoint set Data structure
+  	struct Node* findset(struct Node* node)
+  	{   
+ 
+  		if(node->parent->data==node->data)
+  		  return node;
+  		
+  		node->parent=findset(node->parent);
+  	    return node->parent;
+  		  
+  	}
+  	 
+   //union set operation of the Disjoint set data structure
+   //It should be noted that union is performed by rank of the node which has initial default value of zero 
+   //Path Comperssion is also performed in order to enhance efficiency of the nodes
+   
+   void unionset(int data1,int data2)
+  	{
+  		struct Node* node1=map1[data1];
+  		struct Node* node2=map1[data2];
+  		if(findset(node1)==findset(node2))
+  		   return;
+  		struct Node* parent1=findset(node1);
+  		
+  		
+  		struct Node* parent2=findset(node2);
+  		
+  		if(parent1->rank>=parent2->rank)
+  		 { parent1->rank = (parent1->rank==parent2->rank)?parent1->rank+1:parent1->rank;
+  		   parent2->parent = parent1;
+  		 }
+  		else
+  		  parent1->parent=parent2;
+  		 
+  	}
+  	
+};
+int main() {
+   Disjointset ds;
+   ds.createNode(1);
+   ds.createNode(2);
+   ds.createNode(3);
+   ds.createNode(4);
+   ds.createNode(5);
+   ds.createNode(6);
+   ds.createNode(7);
+   ds.createNode(8);
+   ds.createNode(9);
+   ds.unionset(1,2);
+   ds.unionset(2,3);
+   ds.unionset(4,5);
+   ds.unionset(6,7);
+   ds.unionset(5,6);
+   ds.unionset(3,7);
+   int x = 10;
+   while(x--)
+    {   if(x==0)
+          break;
+    	cout<<(ds.findset(ds.map1[x])->data)<<endl;
+    }
+	
+	return 0;
+}
